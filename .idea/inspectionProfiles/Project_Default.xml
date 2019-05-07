@@ -1,0 +1,71 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Production" level="WARNING" enabled="true">
+        <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+        <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+      </scope>
+      <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+    </inspection_tool>
+    <inspection_tool class="FieldCanBeLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="EXCLUDE_ANNOS">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="com.fasterxml.jackson.annotation.JsonUnwrapped" />
+          </list>
+        </value>
+      </option>
+      <option name="IGNORE_FIELDS_USED_IN_MULTIPLE_METHODS" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FieldNotUsedInToString" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LongLine" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MVCPathVariableInspection" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="OptionalGetWithoutIsPresent" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Production" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="OptionalUsedAsFieldOrParameterType" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ProblematicWhitespace" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantSuppression" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="IGNORE_ALL" value="true" />
+    </inspection_tool>
+    <inspection_tool class="SSBasedInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <replaceConfiguration name="Can be shortened to ResponseEntity.ok(body)" created="1529574801385" text="new ResponseEntity&lt;&gt;($var$, $status$)" recursive="false" caseInsensitive="true" type="JAVA" reformatAccordingToStyle="false" shortenFQN="false" replacement="ResponseEntity.ok($var$)">
+        <constraint name="var" formalTypeWithinHierarchy="true" within="" contains="" />
+        <constraint name="status" regexp="OK" nameOfExprType="HttpStatus" exprTypeWithinHierarchy="true" within="" contains="" />
+        <constraint name="__context__" target="true" within="" contains="" />
+      </replaceConfiguration>
+      <searchConfiguration name="&quot;required = false&quot; may be removed if the parameter type is enclosed in java.util.Optional" created="1529655216676" text="@$RequestParam$($required$ = $false$) $type$ $var$," recursive="false" caseInsensitive="true" type="JAVA">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="type" within="" contains="" />
+        <constraint name="var" within="" contains="" />
+        <constraint name="required" regexp="required" within="" contains="" />
+        <constraint name="false" regexp="false" within="" contains="" />
+        <constraint name="RequestParam" regexp="RequestParam" target="true" within="" contains="" />
+      </searchConfiguration>
+      <replaceConfiguration name="Possibly missing 'else' keyword" created="1532002092593" text="if ($e1$ instanceof $throwable1$) {&#10;    $ifStm1$;&#10;}&#10;if ($e2$ instanceof $throwable2$) {&#10;    $ifStm2$;&#10;} else {&#10;    $else$;&#10;}" recursive="false" caseInsensitive="true" type="JAVA" reformatAccordingToStyle="true" shortenFQN="false" replacement="if ($e1$ instanceof $throwable1$) {&#10;    $ifStm1$;&#10;} else if ($e2$ instanceof $throwable2$) {&#10;    $ifStm2$;&#10;} else {&#10;    $else$;&#10;}">
+        <constraint name="ifStm1" maxCount="2147483647" within="" contains="" />
+        <constraint name="__context__" target="true" within="" contains="" />
+        <constraint name="e1" within="" contains="" />
+        <constraint name="e2" within="" contains="" />
+        <constraint name="ifStm2" maxCount="2147483647" within="" contains="" />
+        <constraint name="throwable1" regexp="Throwable" withinHierarchy="true" within="" contains="" />
+        <constraint name="throwable2" regexp="Throwable" withinHierarchy="true" within="" contains="" />
+        <constraint name="else" minCount="0" maxCount="2147483647" within="" contains="" />
+      </replaceConfiguration>
+    </inspection_tool>
+    <inspection_tool class="SpringJavaInjectionPointsAutowiringInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="WeakerAccess" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Production" level="WARNING" enabled="true">
+        <option name="SUGGEST_PACKAGE_LOCAL_FOR_MEMBERS" value="true" />
+        <option name="SUGGEST_PACKAGE_LOCAL_FOR_TOP_CLASSES" value="true" />
+        <option name="SUGGEST_PRIVATE_FOR_INNERS" value="false" />
+      </scope>
+      <option name="SUGGEST_PACKAGE_LOCAL_FOR_MEMBERS" value="true" />
+      <option name="SUGGEST_PACKAGE_LOCAL_FOR_TOP_CLASSES" value="true" />
+      <option name="SUGGEST_PRIVATE_FOR_INNERS" value="false" />
+      <option name="SUGGEST_FOR_CONSTANTS" value="false" />
+    </inspection_tool>
+  </profile>
+</component>

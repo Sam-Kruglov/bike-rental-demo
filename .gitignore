@@ -1,0 +1,8 @@
+.mvn/wrapper/maven-wrapper.jar
+/target/
+
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/runConfigurations/
+*.iml
