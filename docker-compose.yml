@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  axon-server:
+    image: axoniq/axonserver:4.1.2
+    container_name: "axon-sever"
+    ports:
+      - 8024:8024
+      - 8124:8124
+    #dev mode will only be available in 4.2+
+    command: java -jar axonserver.jar --axoniq.axonserver.devmode.enabled=true
