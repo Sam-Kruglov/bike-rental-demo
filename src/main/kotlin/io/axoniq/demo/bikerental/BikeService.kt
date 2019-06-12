@@ -3,13 +3,14 @@ package io.axoniq.demo.bikerental
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.gateway.EventGateway
+import org.axonframework.queryhandling.QueryHandler
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
 @Service
 class BikeService(
-        private val eventBus: EventGateway,
+        private val eventGateway: EventGateway,
         private val repo: BikeRepo
 ) {
 
@@ -18,33 +19,33 @@ class BikeService(
     }
 
     @CommandHandler
-    fun register(request: RegisterBikeRequest): String {
-        val bike = repo.save(Bike(request.bikeId, request.location))
-        eventBus.publish(BikeRegisteredEvent(bike.id, bike.location))
+    fun register(command: RegisterBikeCommand): String {
+        val bike = repo.save(Bike(command.bikeId, command.location))
+        eventGateway.publish(BikeRegisteredEvent(bike.id, bike.location))
         return bike.id
     }
 
     @Transactional
     @CommandHandler
-    fun rent(request: RentBikeRequest) {
-        val bike = this.findByIfOrThrow(request.bikeId)
-        bike.rent(request.renter)
-        eventBus.publish(BikeRentedEvent(bike.id, bike.renter!!))
+    fun rent(command: RentBikeCommand) {
+        val bike = this.findByIfOrThrow(command.bikeId)
+        bike.rent(command.renter)
+        eventGateway.publish(BikeRentedEvent(bike.id, bike.renter!!))
     }
 
     @Transactional
     @CommandHandler
-    fun returnAt(request: ReturnBikeRequest) {
-        val bike = this.findByIfOrThrow(request.bikeId)
-        bike.returnAt(request.location)
-        eventBus.publish(BikeReturnedEvent(bike.id, bike.location))
+    fun returnAt(command: ReturnBikeCommand) {
+        val bike = this.findByIfOrThrow(command.bikeId)
+        bike.returnAt(command.location)
+        eventGateway.publish(BikeReturnedEvent(bike.id, bike.location))
     }
 
-    @CommandHandler
-    fun findAll(request: GetAllBikesRequest): Iterable<Bike> = repo.findAll()
+    @QueryHandler
+    fun findAll(query: GetAllBikesQuery): Iterable<Bike> = repo.findAll()
 
-    @CommandHandler
-    fun findById(request: GetBikeByIdRequest): Bike? = repo.findById(request.bikeId).orElse(null)
+    @QueryHandler
+    fun findById(query: GetBikeByIdQuery): Bike? = repo.findById(query.bikeId).orElse(null)
 
     @EventHandler
     fun anyEventListener(event: Any) {

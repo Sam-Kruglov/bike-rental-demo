@@ -1,6 +1,8 @@
 package io.axoniq.demo.bikerental
 
 import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.messaging.responsetypes.ResponseTypes
+import org.axonframework.queryhandling.QueryGateway
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -16,7 +18,8 @@ import java.util.concurrent.CompletableFuture
 @RestController
 @RequestMapping("/bikes")
 class RentalController(
-        private val requestBus: CommandGateway
+        private val queryGateway: QueryGateway,
+        private val commandGateway: CommandGateway
 ) {
 
     @PostMapping("{id}")
@@ -24,7 +27,7 @@ class RentalController(
             @PathVariable id: String,
             @RequestParam location: String
     ): CompletableFuture<String> {
-        return requestBus.send(RegisterBikeRequest(id, location))
+        return commandGateway.send(RegisterBikeCommand(id, location))
     }
 
     @PutMapping("/{id}/rent")
@@ -32,7 +35,7 @@ class RentalController(
             @PathVariable id: String,
             @RequestParam renter: String
     ): CompletableFuture<String> {
-        return requestBus.send<Void>(RentBikeRequest(id, renter))
+        return commandGateway.send<Void>(RentBikeCommand(id, renter))
                 .thenApply { "Bike rented to $renter" }
     }
 
@@ -41,18 +44,18 @@ class RentalController(
             @PathVariable id: String,
             @RequestParam location: String
     ): CompletableFuture<String> {
-        return requestBus.send<Void>(ReturnBikeRequest(id, location))
+        return commandGateway.send<Void>(ReturnBikeCommand(id, location))
                 .thenApply { "Bike returned in $location" }
     }
 
     @GetMapping
-    fun findAll(): CompletableFuture<Iterable<Bike>> {
-        return requestBus.send<Iterable<Bike>>(GetAllBikesRequest())
+    fun findAll(): CompletableFuture<List<Bike>> {
+        return queryGateway.query(GetAllBikesQuery(), ResponseTypes.multipleInstancesOf(Bike::class.java))
     }
 
     @GetMapping("/{id}")
     fun findOne(@PathVariable id: String): CompletableFuture<Bike?> {
-        return requestBus.send<Bike>(GetBikeByIdRequest(id))
+        return queryGateway.query(GetBikeByIdQuery(id), Bike::class.java)
     }
 
     @ExceptionHandler
