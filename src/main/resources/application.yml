@@ -1,1 +1,3 @@
-spring.application.name: Bike Rental Service
+spring:
+  application.name: Bike Rental Service
+  jpa.open-in-view: false
