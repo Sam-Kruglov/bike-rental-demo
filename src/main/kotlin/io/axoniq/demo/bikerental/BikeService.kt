@@ -1,5 +1,6 @@
 package io.axoniq.demo.bikerental
 
+import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.gateway.EventGateway
 import org.slf4j.LoggerFactory
@@ -16,29 +17,34 @@ class BikeService(
         private val log = LoggerFactory.getLogger(BikeService::class.java)
     }
 
-    fun register(id: String, location: String): String {
-        val bike = repo.save(Bike(id, location))
+    @CommandHandler
+    fun register(request: RegisterBikeRequest): String {
+        val bike = repo.save(Bike(request.bikeId, request.location))
         eventBus.publish(BikeRegisteredEvent(bike.id, bike.location))
         return bike.id
     }
 
     @Transactional
-    fun rent(id: String, renter: String) {
-        val bike = this.findByIfOrThrow(id)
-        bike.rent(renter)
+    @CommandHandler
+    fun rent(request: RentBikeRequest) {
+        val bike = this.findByIfOrThrow(request.bikeId)
+        bike.rent(request.renter)
         eventBus.publish(BikeRentedEvent(bike.id, bike.renter!!))
     }
 
     @Transactional
-    fun returnAt(id: String, location: String) {
-        val bike = this.findByIfOrThrow(id)
-        bike.returnAt(location)
+    @CommandHandler
+    fun returnAt(request: ReturnBikeRequest) {
+        val bike = this.findByIfOrThrow(request.bikeId)
+        bike.returnAt(request.location)
         eventBus.publish(BikeReturnedEvent(bike.id, bike.location))
     }
 
-    fun findAll(): Iterable<Bike> = repo.findAll()
+    @CommandHandler
+    fun findAll(request: GetAllBikesRequest): Iterable<Bike> = repo.findAll()
 
-    fun findById(id: String): Bike? = repo.findById(id).orElse(null)
+    @CommandHandler
+    fun findById(request: GetBikeByIdRequest): Bike? = repo.findById(request.bikeId).orElse(null)
 
     @EventHandler
     fun anyEventListener(event: Any) {

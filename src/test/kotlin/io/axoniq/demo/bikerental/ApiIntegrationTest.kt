@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
@@ -35,7 +37,7 @@ class ApiIntegrationTest {
         mockMvc.perform(
                 get("/bikes")
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$").isEmpty)
     }
@@ -45,7 +47,7 @@ class ApiIntegrationTest {
     fun `register in Vilnius -- ok`() {
         mockMvc.perform(
                 post("/bikes/{id}", id).param("location", "Vilnius")
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(content().string(id))
     }
@@ -56,7 +58,7 @@ class ApiIntegrationTest {
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("location").value("Vilnius"))
@@ -68,7 +70,7 @@ class ApiIntegrationTest {
     fun `rent to Allard -- ok`() {
         mockMvc.perform(
                 put("/bikes/{id}/rent", id).param("renter", "Allard")
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(content().string("Bike rented to Allard"))
     }
@@ -79,7 +81,7 @@ class ApiIntegrationTest {
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("location").value("Vilnius"))
@@ -91,7 +93,7 @@ class ApiIntegrationTest {
     fun `rent to Steven -- already rented`() {
         val exception = mockMvc.perform(
                 put("/bikes/{id}/rent", id).param("renter", "Steven")
-        )
+        ).async()
                 .andExpect(status().is5xxServerError)
                 .andReturn().resolvedException
         assertThat(exception).hasMessage("Bike is already rented")
@@ -103,7 +105,7 @@ class ApiIntegrationTest {
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("location").value("Vilnius"))
@@ -115,7 +117,7 @@ class ApiIntegrationTest {
     fun `return in Barcelona -- ok`() {
         mockMvc.perform(
                 put("/bikes/{id}/return", id).param("location", "Barcelona")
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(content().string("Bike returned in Barcelona"))
     }
@@ -126,7 +128,7 @@ class ApiIntegrationTest {
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("location").value("Barcelona"))
@@ -138,7 +140,7 @@ class ApiIntegrationTest {
     fun `return in Vilnius -- already returned`() {
         val exception = mockMvc.perform(
                 put("/bikes/{id}/return", id).param("location", "Vilnius")
-        )
+        ).async()
                 .andExpect(status().is5xxServerError)
                 .andReturn().resolvedException
         assertThat(exception).hasMessage("Bike is already returned")
@@ -150,10 +152,12 @@ class ApiIntegrationTest {
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-        )
+        ).async()
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("location").value("Barcelona"))
                 .andExpect(jsonPath("renter").isEmpty)
     }
+
+    private fun ResultActions.async() = mockMvc.perform(asyncDispatch(this.andReturn()))
 }
