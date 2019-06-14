@@ -136,8 +136,10 @@
                         <plugin>spring</plugin>
                         <plugin>all-open</plugin>
                         <plugin>jpa</plugin>
+                        <plugin>no-arg</plugin>
                     </compilerPlugins>
                     <pluginOptions>
+                        <option>no-arg:annotation=org.axonframework.spring.stereotype.Aggregate</option>
                         <!-- Hibernate needs to inject proxies sometimes -->
                         <option>all-open:annotation=javax.persistence.Entity</option>
                         <option>all-open:annotation=javax.persistence.MappedSuperclass</option>

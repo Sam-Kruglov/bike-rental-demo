@@ -1,9 +1,11 @@
 package io.axoniq.demo.bikerental.write
 
+import org.axonframework.spring.stereotype.Aggregate
 import javax.persistence.Entity
 import javax.persistence.Id
 
 @Entity
+@Aggregate
 class Bike {
 
     @Id
