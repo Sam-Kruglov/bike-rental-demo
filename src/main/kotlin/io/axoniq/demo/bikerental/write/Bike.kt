@@ -1,5 +1,13 @@
 package io.axoniq.demo.bikerental.write
 
+import io.axoniq.demo.bikerental.BikeRegisteredEvent
+import io.axoniq.demo.bikerental.BikeRentedEvent
+import io.axoniq.demo.bikerental.BikeReturnedEvent
+import io.axoniq.demo.bikerental.RegisterBikeCommand
+import io.axoniq.demo.bikerental.RentBikeCommand
+import io.axoniq.demo.bikerental.ReturnBikeCommand
+import org.axonframework.commandhandling.CommandHandler
+import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -15,22 +23,28 @@ class Bike {
         protected set
 
     @Suppress("ConvertSecondaryConstructorToPrimary", "LeakingThis")
-    constructor(id: String) {
-        this.id = id
+    @CommandHandler
+    constructor(command: RegisterBikeCommand) {
+        this.id = command.bikeId
         this.available = true
+        AggregateLifecycle.apply(BikeRegisteredEvent(id, command.location))
     }
 
-    fun rent() {
+    @CommandHandler
+    fun rent(command: RentBikeCommand) {
         if (!available) {
             throw IllegalArgumentException("Bike is already rented")
         }
         available = false
+        AggregateLifecycle.apply(BikeRentedEvent(id, command.renter))
     }
 
-    fun returnAt() {
+    @CommandHandler
+    fun returnAt(command: ReturnBikeCommand) {
         if (available) {
             throw IllegalArgumentException("Bike is already returned")
         }
         available = true
+        AggregateLifecycle.apply(BikeReturnedEvent(id, command.location))
     }
 }
