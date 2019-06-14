@@ -7,27 +7,24 @@ import io.axoniq.demo.bikerental.RegisterBikeCommand
 import io.axoniq.demo.bikerental.RentBikeCommand
 import io.axoniq.demo.bikerental.ReturnBikeCommand
 import org.axonframework.commandhandling.CommandHandler
+import org.axonframework.eventsourcing.EventSourcingHandler
+import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
-import javax.persistence.Entity
-import javax.persistence.Id
 
-@Entity
 @Aggregate
 class Bike {
 
-    @Id
-    val id: String
+    @AggregateIdentifier
+    lateinit var id: String
 
-    var available: Boolean
+    var available: Boolean = true
         protected set
 
     @Suppress("ConvertSecondaryConstructorToPrimary", "LeakingThis")
     @CommandHandler
     constructor(command: RegisterBikeCommand) {
-        this.id = command.bikeId
-        this.available = true
-        AggregateLifecycle.apply(BikeRegisteredEvent(id, command.location))
+        AggregateLifecycle.apply(BikeRegisteredEvent(command.bikeId, command.location))
     }
 
     @CommandHandler
@@ -35,8 +32,7 @@ class Bike {
         if (!available) {
             throw IllegalArgumentException("Bike is already rented")
         }
-        available = false
-        AggregateLifecycle.apply(BikeRentedEvent(id, command.renter))
+        AggregateLifecycle.apply(BikeRentedEvent(command.bikeId, command.renter))
     }
 
     @CommandHandler
@@ -44,7 +40,22 @@ class Bike {
         if (available) {
             throw IllegalArgumentException("Bike is already returned")
         }
+        AggregateLifecycle.apply(BikeReturnedEvent(command.bikeId, command.location))
+    }
+
+    @EventSourcingHandler
+    fun registered(event: BikeRegisteredEvent) {
+        this.id = event.bikeId
+        this.available = true
+    }
+
+    @EventSourcingHandler
+    fun rented(event: BikeRentedEvent) {
+        available = false
+    }
+
+    @EventSourcingHandler
+    fun returned(event: BikeReturnedEvent) {
         available = true
-        AggregateLifecycle.apply(BikeReturnedEvent(id, command.location))
     }
 }
