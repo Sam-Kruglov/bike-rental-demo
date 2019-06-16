@@ -6,6 +6,7 @@ data class RegisterBikeCommand(@TargetAggregateIdentifier val bikeId: String, va
 data class RentBikeCommand(@TargetAggregateIdentifier val bikeId: String, val renter: String)
 data class ReturnBikeCommand(@TargetAggregateIdentifier val bikeId: String, val location: String)
 
+data class GetBikeHistoryByIdQuery(val bikeId: String)
 data class GetBikeByIdQuery(val bikeId: String)
 class GetAllBikesQuery
 

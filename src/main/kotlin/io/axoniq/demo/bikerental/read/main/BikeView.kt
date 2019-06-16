@@ -1,4 +1,4 @@
-package io.axoniq.demo.bikerental.read
+package io.axoniq.demo.bikerental.read.main
 
 import javax.persistence.Entity
 import javax.persistence.Id

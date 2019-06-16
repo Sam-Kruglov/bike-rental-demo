@@ -1,4 +1,4 @@
-package io.axoniq.demo.bikerental.read
+package io.axoniq.demo.bikerental.read.main
 
 import io.axoniq.demo.bikerental.BikeRegisteredEvent
 import io.axoniq.demo.bikerental.BikeRentedEvent

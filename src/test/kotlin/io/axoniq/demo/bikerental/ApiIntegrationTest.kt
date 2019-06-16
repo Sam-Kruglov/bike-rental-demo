@@ -170,5 +170,20 @@ class ApiIntegrationTest {
                 .andExpect(jsonPath("renter").isEmpty)
     }
 
+    @Test
+    @Order(12)
+    fun `find the bike history -- registered in Vilnius, rented to Allard, returned in Barcelona`() {
+        //wait for the view to synchronize
+        TimeUnit.MILLISECONDS.sleep(100)
+        mockMvc.perform(
+                get("/bikes/{id}/history", id)
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+        ).async()
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("[0].description").value("Bike registered in Vilnius"))
+                .andExpect(jsonPath("[1].description").value("Bike rented to Allard"))
+                .andExpect(jsonPath("[2].description").value("Bike returned in Barcelona"))
+    }
+
     private fun ResultActions.async() = mockMvc.perform(asyncDispatch(this.andReturn()))
 }
