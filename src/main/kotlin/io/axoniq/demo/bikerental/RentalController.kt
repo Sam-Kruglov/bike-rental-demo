@@ -1,5 +1,6 @@
 package io.axoniq.demo.bikerental
 
+import io.axoniq.demo.bikerental.read.BikeView
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
@@ -49,13 +50,13 @@ class RentalController(
     }
 
     @GetMapping
-    fun findAll(): CompletableFuture<List<Bike>> {
-        return queryGateway.query(GetAllBikesQuery(), ResponseTypes.multipleInstancesOf(Bike::class.java))
+    fun findAll(): CompletableFuture<List<BikeView>> {
+        return queryGateway.query(GetAllBikesQuery(), ResponseTypes.multipleInstancesOf(BikeView::class.java))
     }
 
     @GetMapping("/{id}")
-    fun findOne(@PathVariable id: String): CompletableFuture<Bike?> {
-        return queryGateway.query(GetBikeByIdQuery(id), Bike::class.java)
+    fun findOne(@PathVariable id: String): CompletableFuture<BikeView?> {
+        return queryGateway.query(GetBikeByIdQuery(id), BikeView::class.java)
     }
 
     @ExceptionHandler

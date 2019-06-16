@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.util.concurrent.TimeUnit
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -55,6 +56,8 @@ class ApiIntegrationTest {
     @Test
     @Order(3)
     fun `find the bike -- found, no renter, is in Vilnius`() {
+        //wait for the view to synchronize
+        TimeUnit.MILLISECONDS.sleep(100)
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -78,6 +81,8 @@ class ApiIntegrationTest {
     @Test
     @Order(5)
     fun `find the bike -- found, renter is Allard, is in Vilnius`() {
+        //wait for the view to synchronize
+        TimeUnit.MILLISECONDS.sleep(100)
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -102,6 +107,8 @@ class ApiIntegrationTest {
     @Test
     @Order(7)
     fun `find the bike -- found, renter is still Allard, is in Vilnius`() {
+        //wait for the view to synchronize
+        TimeUnit.MILLISECONDS.sleep(100)
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -125,6 +132,8 @@ class ApiIntegrationTest {
     @Test
     @Order(9)
     fun `find the bike -- found, no renter, is in Barcelona`() {
+        //wait for the view to synchronize
+        TimeUnit.MILLISECONDS.sleep(100)
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -149,6 +158,8 @@ class ApiIntegrationTest {
     @Test
     @Order(11)
     fun `find the bike -- found, no renter, still is in Barcelona`() {
+        //wait for the view to synchronize
+        TimeUnit.MILLISECONDS.sleep(100)
         mockMvc.perform(
                 get("/bikes/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
