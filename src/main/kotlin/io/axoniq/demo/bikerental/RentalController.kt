@@ -1,7 +1,6 @@
 package io.axoniq.demo.bikerental
 
 import org.axonframework.commandhandling.gateway.CommandGateway
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.CompletableFuture
 
-@Profile("gateway")
 @RestController
 @RequestMapping("/bikes")
 class RentalController(

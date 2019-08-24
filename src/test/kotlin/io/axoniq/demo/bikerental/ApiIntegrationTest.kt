@@ -1,21 +1,15 @@
 package io.axoniq.demo.bikerental
 
-import io.axoniq.demo.bikerental.service.BikeQueryService
 import org.assertj.core.api.Assertions.assertThat
-import org.axonframework.springboot.autoconfig.AxonServerAutoConfiguration
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch
@@ -27,8 +21,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
-@EnableAutoConfiguration(exclude = [AxonServerAutoConfiguration::class])
-@ActiveProfiles("gateway", "register", "rental", "return")
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation::class)
@@ -36,12 +28,6 @@ class ApiIntegrationTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @TestConfiguration
-    class TestConfig {
-        @Bean
-        fun bikeQueryService(repo: BikeRepo) = BikeQueryService(repo)
-    }
 
     val id = "1234"
 
