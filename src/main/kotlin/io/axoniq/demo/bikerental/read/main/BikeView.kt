@@ -16,4 +16,8 @@ class BikeView {
         this.id = id
         this.location = location
     }
+
+    override fun toString(): String {
+        return "BikeView(id='$id', location='$location', renter=$renter)"
+    }
 }

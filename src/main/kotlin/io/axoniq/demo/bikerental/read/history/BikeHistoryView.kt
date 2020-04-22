@@ -25,5 +25,9 @@ class BikeHistoryView {
         this.timestamp = timestamp
         this.description = description
     }
+
+    override fun toString(): String {
+        return "BikeHistoryView(id=$id, bikeId='$bikeId', timestamp=$timestamp, description='$description')"
+    }
 }
 

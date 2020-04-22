@@ -6,6 +6,9 @@ import io.axoniq.demo.bikerental.BikeReturnedEvent
 import io.axoniq.demo.bikerental.RegisterBikeCommand
 import io.axoniq.demo.bikerental.RentBikeCommand
 import io.axoniq.demo.bikerental.ReturnBikeCommand
+import io.axoniq.demo.bikerental.config.ErrorType.ALREADY_RENTED
+import io.axoniq.demo.bikerental.config.ErrorType.ALREADY_RETURNED
+import io.axoniq.demo.bikerental.config.ExpectedException
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
@@ -30,7 +33,7 @@ class Bike {
     @CommandHandler
     fun rent(command: RentBikeCommand) {
         if (!available) {
-            throw IllegalArgumentException("Bike is already rented")
+            throw ExpectedException(ALREADY_RENTED, "#$id")
         }
         AggregateLifecycle.apply(BikeRentedEvent(command.bikeId, command.renter))
     }
@@ -38,7 +41,7 @@ class Bike {
     @CommandHandler
     fun returnAt(command: ReturnBikeCommand) {
         if (available) {
-            throw IllegalArgumentException("Bike is already returned")
+            throw ExpectedException(ALREADY_RETURNED, "#$id")
         }
         AggregateLifecycle.apply(BikeReturnedEvent(command.bikeId, command.location))
     }

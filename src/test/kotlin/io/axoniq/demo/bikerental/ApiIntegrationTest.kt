@@ -101,7 +101,7 @@ class ApiIntegrationTest {
         ).async()
                 .andExpect(status().is5xxServerError)
                 .andReturn().resolvedException
-        assertThat(exception).hasMessage("Bike is already rented")
+        assertThat(exception).hasMessage("already rented: #$id")
     }
 
     @Test
@@ -152,7 +152,7 @@ class ApiIntegrationTest {
         ).async()
                 .andExpect(status().is5xxServerError)
                 .andReturn().resolvedException
-        assertThat(exception).hasMessage("Bike is already returned")
+        assertThat(exception).hasMessage("already returned: #$id")
     }
 
     @Test
