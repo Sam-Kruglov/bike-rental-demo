@@ -16,6 +16,7 @@ import org.axonframework.extensions.tracing.MapInjector
 import org.axonframework.extensions.tracing.OpenTraceDispatchInterceptor
 import org.axonframework.extensions.tracing.OpenTraceHandlerInterceptor
 import org.axonframework.extensions.tracing.SpanUtils
+import org.axonframework.extensions.tracing.TracingProperties
 import org.axonframework.extensions.tracing.TracingProvider
 import org.axonframework.extensions.tracing.autoconfig.TracingAutoConfiguration
 import org.axonframework.messaging.InterceptorChain
@@ -31,12 +32,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.core.annotation.Order
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiFunction
 
 @Configuration
 @EnableAutoConfiguration(exclude = [TracingAutoConfiguration::class])
+@Import(TracingAutoConfiguration.PropertiesConfiguration::class)
 class TracingAxonConfig {
 
     companion object {
@@ -72,7 +75,7 @@ class TracingAxonConfig {
                             } else {
                                 //todo check up on https://github.com/AxonFramework/extension-tracing/issues/46
                                 //parent must be present since it triggered the dispatching process
-                                tracer.activeSpan()!!.setOperationName("Send $payloadName")
+                                tracer.activeSpan()!!//.setOperationName("Send $payloadName")
                             }
 
 
@@ -90,13 +93,20 @@ class TracingAxonConfig {
 
         @Bean
         @Order(0)
-        fun traceHandlerInterceptor(tracer: Tracer): MessageHandlerInterceptor<Message<*>> =
-                object : OpenTraceHandlerInterceptor(tracer) {
+        fun traceHandlerInterceptor(tracer: Tracer, tracingProperties: TracingProperties): MessageHandlerInterceptor<Message<*>> =
+                object : OpenTraceHandlerInterceptor(tracer, tracingProperties) {
                     override fun handle(
                             unitOfWork: UnitOfWork<out Message<*>>,
                             interceptorChain: InterceptorChain
                     ): Any? {
-                        val operationName = "Handle ${unitOfWork.message.payloadType.simpleName}"
+                        val operationNamePrefix =
+                                when (unitOfWork.message) {
+                                    is CommandMessage<*> -> tracingProperties.handle.operationNamePrefix.command
+                                    is QueryMessage<*, *> -> tracingProperties.handle.operationNamePrefix.query
+                                    //fixme what prefix to use here?
+                                    else -> tracingProperties.handle.operationNamePrefix.command
+                                }
+                        val operationName = operationNamePrefix + SpanUtils.messageName(unitOfWork.message)
 
                         //span context must be present in the message metadata for handlers
                         val parentSpan = tracer.extractContextFrom(unitOfWork.message)!!

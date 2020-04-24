@@ -9,6 +9,7 @@ import org.axonframework.eventhandling.EventBus
 import org.axonframework.eventhandling.EventMessage
 import org.axonframework.eventhandling.ListenerInvocationErrorHandler
 import org.axonframework.extensions.tracing.TracingCommandGateway
+import org.axonframework.extensions.tracing.TracingProperties
 import org.axonframework.extensions.tracing.TracingQueryGateway
 import org.axonframework.messaging.MessageDispatchInterceptor
 import org.axonframework.messaging.MessageHandlerInterceptor
@@ -28,7 +29,8 @@ class AxonConfig {
             commandBus: CommandBus,
             dispatchInterceptors: List<MessageDispatchInterceptor<in CommandMessage<*>>>,
             handlerInterceptors: List<MessageHandlerInterceptor<in CommandMessage<*>>>,
-            tracer: Tracer
+            tracer: Tracer,
+            tracingProperties: TracingProperties
     ): TracingCommandGateway {
         handlerInterceptors.forEach { commandBus.registerHandlerInterceptor(it) }
         val customDefaultCommandGateway = CustomDefaultCommandGateway(DefaultCommandGateway
@@ -38,6 +40,7 @@ class AxonConfig {
         return TracingCommandGateway.builder()
                 .delegateCommandGateway(customDefaultCommandGateway)
                 .tracer(tracer)
+                .tracingProperties(tracingProperties)
                 .build()
     }
 
@@ -46,7 +49,8 @@ class AxonConfig {
             queryBus: QueryBus,
             dispatchInterceptors: List<MessageDispatchInterceptor<in QueryMessage<*, *>>>,
             handlerInterceptors: List<MessageHandlerInterceptor<in QueryMessage<*, *>>>,
-            tracer: Tracer
+            tracer: Tracer,
+            tracingProperties: TracingProperties
     ): TracingQueryGateway {
         handlerInterceptors.forEach { queryBus.registerHandlerInterceptor(it) }
         val defaultQueryGateway = DefaultQueryGateway.builder()
@@ -56,6 +60,7 @@ class AxonConfig {
         return TracingQueryGateway.builder()
                 .tracer(tracer)
                 .delegateQueryGateway(defaultQueryGateway)
+                .tracingProperties(tracingProperties)
                 .build()
     }
 

@@ -3,13 +3,11 @@ package io.axoniq.demo.bikerental.config.tracing
 import io.opentracing.Span
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
-import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
 import org.axonframework.messaging.unitofwork.CurrentUnitOfWork
-import org.springframework.stereotype.Service
 
-@Aspect
-@Service
+//@Aspect
+//@Service
 class TracingEventHandlerAspect {
 
     companion object {

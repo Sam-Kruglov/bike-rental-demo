@@ -2,4 +2,12 @@ spring:
   application.name: Bike Rental Service
   jpa.open-in-view: false
 
-axon.serializer.events: jackson
+axon:
+  serializer.events: jackson
+  tracing:
+    dispatch.operation-name-prefix:
+      command: 'Fire '
+      query: 'Ask '
+    handle.operation-name-prefix:
+      command: 'Handle '
+      query: 'Serve '
